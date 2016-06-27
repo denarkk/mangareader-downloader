@@ -1,37 +1,37 @@
-import requests as req
-from helpers import *
-from bs4 import BeautifulSoup as bs
-import sys
+from bs4 import BeautifulSoup as bs # The source code parser
+from settings import *              # Global constants
+from request import *               # Requesting and downloading
+from stringhelpers import *         # String utility helpers
+import sys                          # To grab the arguments
 
-globalpath = "C:/Manga/"
+def download_manga_episode(seriesName, episodeNum):
+    current_page  = INITIAL_PAGE
+    download_path = get_download_path(seriesName, episodeNum)
 
-def get_manga(series, episode):
-  page = 1 # Initial page
-  download_path = globalpath + series + "/" + episode + "/"
+    # Exit the function if the episode hasn't been released yet
+    if not_released_yet(seriesName, episodeNum):
+        print(NOT_RELEASED_MESSAGE)
+        return None
 
-  # Check to see if the episode exists
-  if is_not_released(series, episode):
-    print("Episode not released")
-    return None
+    while True: # Loop through the pages until the last one
+        page_url = get_page_url(seriesName, episodeNum, current_page)
+        request  = send_request(page_url)
+        raw_html = request.text
+        
+        # If the page or manga doesn't exist...
+        if request.status_code != 200 or not len(raw_html):
+            print(DOESNT_EXIST if not len(raw_html) else SUCCESS_MESSAGE)
+            break # Exit the loop and end the script
+                
+        # Scrap the html to find the page's image link
+        parsed_html = bs(raw_html, "html.parser")
+        img_url     = parsed_html.find("img", {"id": "img"}).get("src")
+        
+        # Save the page's image in the download path
+        download_img(img_url, download_path, current_page)
+        
+        # Change the current page to the next one
+        current_page = current_page + 1
 
-  while True:
-    dst = url(series, episode, page)
-    r   = req.get(dst) # Request to page
-    src = r.text # Source code of the page
-
-    # If the page doesn't exist...
-    if r.status_code != 200:
-      break # Exit the loop
-
-    # Crawl the page to download manga image
-    source = bs(src, "html.parser")
-    for imglink in source.findAll("img", {"id": "img"}):
-      img = imglink.get("src")
-      get_img(img, download_path, page)
-
-    # Go to the next page
-    page = page + 1
-
-  print("Finished downloading " + series + " " + episode)
-
-get_manga(sys.argv[1], sys.argv[2])
+# Run the main function in the console
+download_manga_episode(sys.argv[1], sys.argv[2])
