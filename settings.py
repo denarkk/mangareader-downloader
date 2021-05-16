@@ -12,13 +12,13 @@ INITIAL_PAGE = 1
 SUCCESS_MESSAGE = "The episode has been successfully downloaded!"
 
 # Message to be displayed while downloading a page
-DOWLOADING_MESSAGE = "Currently downloading page #" # + pageNumber
+DOWNLOADING_MESSAGE = "Currently downloading page #" # + pageNumber
 
 # Message to be displayed when the episode isn't released yet
 NOT_RELEASED = "This episode hasn't been released yet... sorry, mate."
 
 # Message to be displayed for HTTP request errors
-DOESNT_EXIST = "This series doesn't exist in the database!"
+REQUEST_ERROR = "This series doesn't exist in the database!"
 
 # Maximum amount of digits expected as the page number
 ESTIMATED_MAX_DIGITS = 3

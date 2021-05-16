@@ -18,7 +18,7 @@ def not_released_yet(seriesName, episodeNum):
     manga_url = get_page_url(seriesName, episodeNum)
     html      = send_request(manga_url).text
     
-    return NOT_RELEASED_TEXT in html
+    return NOT_RELEASED in html
 
 # Download the image to the hard drive
 def download_img(url, download_path, page):

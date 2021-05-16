@@ -10,7 +10,7 @@ def download_manga_episode(seriesName, episodeNum):
 
     # Exit the function if the episode hasn't been released yet
     if not_released_yet(seriesName, episodeNum):
-        print(NOT_RELEASED_MESSAGE)
+        print(NOT_RELEASED)
         return None
 
     while True: # Loop through the pages until the last one
@@ -20,7 +20,7 @@ def download_manga_episode(seriesName, episodeNum):
         
         # If the page or manga doesn't exist...
         if request.status_code != 200 or not len(raw_html):
-            print(DOESNT_EXIST if not len(raw_html) else SUCCESS_MESSAGE)
+            print(REQUEST_ERROR if not len(raw_html) else SUCCESS_MESSAGE)
             break # Exit the loop and end the script
                 
         # Scrap the html to find the page's image link
